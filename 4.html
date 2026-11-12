@@ -1,0 +1,649 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>Addin Satria</title>
+<link rel="icon" type="image/png" href="logo.png">
+<link rel="apple-touch-icon" href="logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#000000;                     /* black */
+    --col:688px;                      /* centered column: 640px content + 24px gutters */
+    --text:#E8E6E1;                   /* main text */
+    --muted:#8F8E8A;                  /* secondary text */
+    --white:#FFFFFF;                  /* highlighted links */
+    --line:rgba(255,255,255,.08);     /* hairlines */
+    --panel:#1E1F23;                  /* solid card fill */
+    --panel-hover:#26272C;
+    --radius:14px;
+    --sans:"Sora", system-ui, -apple-system, sans-serif;
+  }
+  *{box-sizing:border-box}
+  ::selection{background:var(--white);color:var(--bg)}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0;background:var(--bg);color:var(--text);
+    font:300 16px/1.75 var(--sans);
+    min-height:100vh;display:flex;flex-direction:column;
+  }
+  a{color:var(--text);text-decoration:none}
+  :focus-visible{outline:2px solid var(--white);outline-offset:3px;border-radius:6px}
+  main:focus{outline:none}
+
+  /* ---------- organic tendril field ---------- */
+  #sky{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+  #field{position:absolute;inset:0;display:block}
+  .topbar, main, footer{position:relative;z-index:1}
+
+  /* ---------- corner artwork ---------- */
+  .corner-art{
+    position:fixed;right:0;bottom:0;z-index:0;pointer-events:none;
+    width:min(240px,28vw);
+    opacity:0;animation:fadein 1.2s ease-out .9s both;
+    transform:rotate(180deg);
+    -webkit-mask-image:linear-gradient(315deg,#000 55%,transparent 98%);
+            mask-image:linear-gradient(315deg,#000 55%,transparent 98%);
+  }
+  .corner-art img{display:block;width:100%;height:auto}
+
+  /* ---------- top bar ---------- */
+  .topbar .inner{
+    padding:0 32px;height:64px;
+    display:flex;align-items:center;justify-content:space-between;gap:16px;
+  }
+  .mark{
+    display:flex;align-items:center;gap:8px;
+    font:600 17px/1 var(--sans);letter-spacing:.08em;color:var(--white);
+  }
+  .mark img{width:40px;height:40px;border-radius:8px;display:block;object-fit:cover}
+  .tabs{display:flex;gap:4px;list-style:none;margin:0;padding:0;overflow-x:auto}
+  .tabs a{
+    display:block;padding:8px 14px;border-radius:999px;
+    font:400 14px/1 var(--sans);color:var(--muted);white-space:nowrap;
+  }
+  .tabs a:hover{color:var(--white)}
+  .tabs a[aria-current="page"]{color:var(--white);background:rgba(255,255,255,.08)}
+
+  /* ---------- page frame ---------- */
+  main{width:100%;max-width:var(--col);margin:0 auto;padding:72px 24px 56px;flex:1}
+  .view[hidden]{display:none}
+  .view p{color:var(--muted);max-width:62ch;margin:0}
+  .view p + p{margin-top:18px}
+
+  /* page-open: content gets a quick soft fade */
+  @keyframes fadein{from{opacity:0}to{opacity:1}}
+  .stagger{animation:fadein .45s ease-out both}
+
+  /* ---------- about ---------- */
+  h1{
+    font:600 clamp(22px,3.5vw,30px)/1.2 var(--sans);letter-spacing:-.015em;
+    color:var(--white);margin:0 0 14px;
+    display:flex;align-items:center;gap:16px;flex-wrap:wrap;
+  }
+  #view-about p{color:var(--text)}
+  #view-about p.uses-line{margin-top:36px;color:var(--muted)}
+  .uses-line a, .back{color:var(--white);font-weight:500}
+  .uses-line a:hover, .back:hover{text-decoration:underline;text-underline-offset:5px;text-decoration-thickness:1px}
+
+  /* ---------- org logos: fly in from the right, 1-by-1, with trail + impact ---------- */
+  .logos{display:flex;align-items:center;gap:8px}
+  .logo{
+    position:relative;width:30px;height:30px;border-radius:7px;flex:none;
+    background:#26272C;border:1px solid rgba(255,255,255,.16);
+    display:flex;align-items:center;justify-content:center;
+    font:600 13px/1 var(--sans);color:var(--white);
+    opacity:0;
+    animation:logoFlyIn .9s cubic-bezier(.18,.8,.3,1) both;
+  }
+  /* light trail streaming behind the tile (it flies right-to-left) */
+  .logo::before{
+    content:"";position:absolute;top:50%;left:100%;width:170px;height:4px;margin-top:-2px;
+    border-radius:2px;
+    background:linear-gradient(to right,rgba(255,255,255,.9),rgba(255,255,255,0));
+    box-shadow:0 0 10px rgba(255,255,255,.35);
+    transform-origin:left center;opacity:0;
+    animation:logoTrail .9s cubic-bezier(.18,.8,.3,1) both;
+  }
+  /* shockwave ring that pops on impact */
+  .logo::after{
+    content:"";position:absolute;inset:-4px;border-radius:11px;
+    border:1px solid rgba(255,255,255,.7);opacity:0;pointer-events:none;
+    animation:logoImpact .9s ease-out both;
+  }
+  .logo:nth-child(1),
+  .logo:nth-child(1)::before,
+  .logo:nth-child(1)::after{animation-delay:.5s}
+  .logo:nth-child(2),
+  .logo:nth-child(2)::before,
+  .logo:nth-child(2)::after{animation-delay:.72s}
+  .logo:nth-child(3),
+  .logo:nth-child(3)::before,
+  .logo:nth-child(3)::after{animation-delay:.94s}
+  .logo:nth-child(4),
+  .logo:nth-child(4)::before,
+  .logo:nth-child(4)::after{animation-delay:1.16s}
+  .logo:nth-child(5),
+  .logo:nth-child(5)::before,
+  .logo:nth-child(5)::after{animation-delay:1.38s}
+
+  @keyframes logoFlyIn{
+    0%{transform:translateX(360px) scale(1);opacity:0}
+    50%{opacity:1}
+    68%{transform:translateX(0) scale(1.25);opacity:1}
+    78%{transform:translateX(0) scale(.88);opacity:1}
+    88%{transform:translateX(0) scale(1.05);opacity:1}
+    100%{transform:translateX(0) scale(1);opacity:1}
+  }
+  @keyframes logoTrail{
+    0%{opacity:0;transform:scaleX(0)}
+    25%{opacity:.9;transform:scaleX(1)}
+    68%{opacity:.5;transform:scaleX(1)}
+    72%{opacity:0;transform:scaleX(0)}
+    100%{opacity:0;transform:scaleX(0)}
+  }
+  @keyframes logoImpact{
+    0%,67%{opacity:0;transform:scale(.7)}
+    70%{opacity:.85;transform:scale(1)}
+    100%{opacity:0;transform:scale(2.6)}
+  }
+
+  /* ---------- journey ---------- */
+  /* giger spine: the rail is a repeating vertebra strip, thorns out both sides */
+  .timeline{
+    list-style:none;margin:0;padding:0 0 0 10px; /* 10px paint room left of the rail */
+    background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='72' viewBox='0 0 32 72' fill='none' stroke='%23FFFFFF' stroke-width='1' stroke-linecap='round'%3E%3Cpath d='M16 0V72' stroke-opacity='.13'/%3E%3Cg stroke-opacity='.2'%3E%3Cpath d='M8 18H24'/%3E%3Cpath d='M10 18L7 11'/%3E%3Cpath d='M22 18L25 11'/%3E%3Cpath d='M8 54H24'/%3E%3Cpath d='M10 54L7 61'/%3E%3Cpath d='M22 54L25 61'/%3E%3C/g%3E%3Cg fill='%23FFFFFF' stroke='none'%3E%3Cg fill-opacity='.32'%3E%3Ccircle cx='7' cy='11' r='.9'/%3E%3Ccircle cx='25' cy='11' r='.9'/%3E%3Ccircle cx='7' cy='61' r='.9'/%3E%3Ccircle cx='25' cy='61' r='.9'/%3E%3C/g%3E%3Ccircle cx='16' cy='36' r='.8' fill-opacity='.25'/%3E%3C/g%3E%3C/svg%3E") -6px 0/32px 72px repeat-y;
+    /* pulley: rope runs up at constant speed, then snaps to a halt with a rebound */
+    animation:fadein .45s ease-out both, spinePull 1.3s linear .1s both;
+  }
+  @keyframes spinePull{
+    0%{background-position:-6px 504px}    /* 7 vertebrae below — rope starts low */
+    75%{background-position:-6px 14px}    /* constant upward pull */
+    82%{background-position:-6px -6px}    /* sudden stop: overshoot */
+    88%{background-position:-6px 5px}     /* rebound down */
+    93%{background-position:-6px -2px}    /* smaller overshoot */
+    97%{background-position:-6px 1px}     /* tiny settle */
+    100%{background-position:-6px 0}      /* rest */
+  }
+  .timeline li{position:relative;padding:0 0 38px 32px}
+  .timeline li:last-child{padding-bottom:4px}
+  .timeline li::before{
+    content:"";position:absolute;left:-5px;top:8px;width:9px;height:9px;border-radius:50%;
+    background:var(--white);box-shadow:0 0 10px 2px rgba(255,255,255,.45);
+    opacity:0;
+    animation:dotOn .45s ease-out both;
+  }
+  /* giger ring: circle linework around the dot, open at top/bottom, lips flare outward */
+  .timeline li::after{
+    content:"";position:absolute;left:-18.5px;top:-5.5px;width:36px;height:36px;
+    pointer-events:none;
+    background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 36' fill='none' stroke='%23FFFFFF' stroke-opacity='.38' stroke-width='1.2' stroke-linecap='round'%3E%3Cpath d='M26.3 5.2C25.2 5.1 21.4 7.4 23.2 8.3A11 11 0 0 1 23.2 27.7C21.4 28.6 25.2 30.9 26.3 30.8'/%3E%3Cpath d='M9.7 5.2C10.8 5.1 14.6 7.4 12.8 8.3A11 11 0 0 0 12.8 27.7C14.6 28.6 10.8 30.9 9.7 30.8'/%3E%3Cg stroke-opacity='.2' stroke-width='1'%3E%3Cpath d='M29.4 18H32'/%3E%3Cpath d='M6.6 18H4'/%3E%3C/g%3E%3Cg fill='%23FFFFFF' stroke='none' fill-opacity='.5'%3E%3Ccircle cx='18' cy='4.6' r='1'/%3E%3Ccircle cx='18' cy='31.4' r='1'/%3E%3C/g%3E%3C/svg%3E") center/100% 100% no-repeat;
+    opacity:0;
+    animation:ringOn .5s ease-out both;
+  }
+  /* dots fire as the rope halts, cascading down the spine */
+  .timeline li:nth-child(1)::before,
+  .timeline li:nth-child(1)::after{animation-delay:1.12s}
+  .timeline li:nth-child(2)::before,
+  .timeline li:nth-child(2)::after{animation-delay:1.24s}
+  .timeline li:nth-child(3)::before,
+  .timeline li:nth-child(3)::after{animation-delay:1.36s}
+  .timeline li:nth-child(4)::before,
+  .timeline li:nth-child(4)::after{animation-delay:1.48s}
+  .timeline li:nth-child(5)::before,
+  .timeline li:nth-child(5)::after{animation-delay:1.6s}
+  @keyframes dotOn{
+    0%{opacity:0}
+    35%{opacity:1;box-shadow:0 0 18px 6px rgba(255,255,255,.85)}
+    100%{opacity:1;box-shadow:0 0 10px 2px rgba(255,255,255,.45)}
+  }
+  @keyframes ringOn{
+    0%{opacity:0;transform:scale(.6)}
+    60%{opacity:1;transform:scale(1.1)}
+    100%{opacity:1;transform:scale(1)}
+  }
+  .when{font-size:13px;letter-spacing:.06em;color:var(--muted);margin:0 0 6px}
+  .timeline h3{font:500 18px/1.4 var(--sans);color:var(--white);margin:0 0 2px}
+  .view .org{font-size:14px;margin:0 0 10px}
+  .view .what{font-size:15px;max-width:58ch}
+
+  /* ---------- works ---------- */
+  .cards{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+  .card{
+    background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+    overflow:hidden;display:flex;flex-direction:column;
+  }
+  .card.wide{grid-column:1 / -1}
+  .media{aspect-ratio:16/10;background:#1A1B1F;border-bottom:1px solid var(--line);margin:0;overflow:hidden;flex:none}
+  .media img, .media svg{width:100%;height:100%;display:block;object-fit:cover}
+  .card .body{padding:22px 22px 24px;display:flex;flex-direction:column;flex:1}
+  .card h3{font:500 17px/1.3 var(--sans);color:var(--white);margin:0 0 4px}
+  .view .meta{font-size:13px;margin:0}
+  .view .desc{font-size:14.5px;margin:12px 0 16px;flex:1}
+  .card .links{display:flex;gap:18px;font-size:14px}
+  .card .links a{color:var(--white)}
+  .card .links a:hover{text-decoration:underline;text-underline-offset:4px}
+
+  /* ---------- find-me line ---------- */
+  .findme-line{margin-top:14px !important}
+  .findme-line a{color:var(--white);font-weight:500}
+  .findme-line a:hover{text-decoration:underline;text-underline-offset:5px;text-decoration-thickness:1px}
+
+  /* ---------- uses ---------- */
+  .back{display:inline-block;font-size:14px;margin-bottom:28px}
+  .group{margin-top:44px}
+  .group:first-child{margin-top:0}
+  .group h2{font:500 15px/1.4 var(--sans);color:var(--white);margin:0 0 6px}
+  /* hardware & software: one line per category */
+  .specs{margin:0}
+  .specs > div{padding:12px 0;border-bottom:1px solid var(--line)}
+  .specs dt{display:inline;color:var(--text)}
+  .specs dd{display:inline;margin:0;color:var(--muted);font-size:15px}
+
+  footer{
+    border-top:1px solid var(--line);width:100%;max-width:var(--col);margin:0 auto;
+    padding:22px 24px 34px;color:var(--muted);font-size:13px;
+  }
+
+  @media (max-width:720px){
+    main{padding-top:48px}
+    .cards{grid-template-columns:1fr}
+    .corner-art{display:none}
+  }
+  @media (max-width:420px){
+    .topbar .inner{padding:0 16px}
+    .tabs a{padding:8px 10px;font-size:13px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .stagger,.logo,.logo::before,.logo::after,.timeline,.corner-art,
+    .timeline li::before,.timeline li::after{animation:none}
+    .logo,.timeline li::before,.timeline li::after,.corner-art{opacity:1}
+    .logo::before,.logo::after{display:none}
+  }
+</style>
+</head>
+<body>
+
+<div id="sky" aria-hidden="true"><canvas id="field"></canvas></div>
+<div class="corner-art" aria-hidden="true"><img src="corner.png" alt=""></div>
+
+<header class="topbar">
+  <div class="inner">
+    <a class="mark" href="#about" aria-label="Addin Satria, home"><img src="logo.png" alt=""></a>
+    <nav aria-label="Pages">
+      <ul class="tabs">
+        <li><a href="#about">About</a></li>
+        <li><a href="#journey">Journey</a></li>
+        <li><a href="#works">Works</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="main" tabindex="-1">
+
+  <!-- ================= ABOUT ================= -->
+  <section class="view stagger" id="view-about">
+    <h1>Addin Satria<span class="logos" aria-label="Companies and universities">
+      <span class="logo"><span>A</span></span>
+      <span class="logo"><span>B</span></span>
+      <span class="logo"><span>C</span></span>
+      <span class="logo"><span>D</span></span>
+      <span class="logo"><span>E</span></span>
+    </span></h1>
+    <p class="lede">I'm a software engineer who builds backend systems and
+    the tools that keep them running.</p>
+    <p>I've been writing software professionally for about eight years,
+    mostly on the layer where products actually live: APIs, queues,
+    databases, and the pipelines between them. These days I work on
+    platform and infrastructure, making it easier for other engineers to
+    ship without worrying about what's underneath.</p>
+    <p>I believe a system that needs a hero is a broken system. I build for
+    the person who gets paged at 3 a.m., which is usually me, so I care
+    about good defaults, loud failures, and docs that tell the truth. The
+    best compliment I get is when someone forgets my service exists.</p>
+    <p>I like small teams, clear ownership, and code reviews that leave both
+    the code and the reviewer better. I'd rather delete a feature than
+    maintain one nobody uses, and I always ask for the number before I agree
+    that something is slow.</p>
+    <p>Outside work I mentor junior engineers, write the occasional post
+    about systems design, and spend far too long tuning my dotfiles. I'm
+    based in Jakarta and currently open to new roles, remote or hybrid.</p>
+    <p class="uses-line">If you're interested, here's the
+    <a href="#uses">hardware/software I use</a>.</p>
+    <p class="findme-line">You can also find me here:
+    <a href="#" rel="noopener">LinkedIn</a> &middot;
+    <a href="#" rel="noopener">GitHub</a></p>
+  </section>
+
+  <!-- ================= JOURNEY ================= -->
+  <section class="view" id="view-journey" hidden>
+    <ul class="timeline stagger">
+      <li>
+        <p class="when">2023 to now</p>
+        <h3>Senior Software Engineer</h3>
+        <p class="org">Tech company, platform team</p>
+        <p class="what">Own the platform everything else sits on: service
+        templates, deploy pipelines, and the observability stack. Cut
+        tracing costs by 60% with sampling that never drops the traces that
+        matter.</p>
+      </li>
+      <li>
+        <p class="when">2021 to 2023</p>
+        <h3>Backend Engineer</h3>
+        <p class="org">Fintech scale-up</p>
+        <p class="what">Built billing and webhook delivery for a product
+        that grew 10x while I was there. Learned idempotency the expensive
+        way, and survived my first real on-call rotation.</p>
+      </li>
+      <li>
+        <p class="when">2019 to 2021</p>
+        <h3>Software Engineer</h3>
+        <p class="org">Early-stage startup</p>
+        <p class="what">Third engineering hire. Shipped the first version of
+        everything: API, schema, CI, and a deploy script held together with
+        hope. Later replaced all of it, on purpose this time.</p>
+      </li>
+      <li>
+        <p class="when">2017 to 2019</p>
+        <h3>Junior Developer</h3>
+        <p class="org">Digital agency</p>
+        <p class="what">Client sites and APIs on tight deadlines. My first
+        encounter with production, and with the pager.</p>
+      </li>
+      <li>
+        <p class="when">2015</p>
+        <h3>First paid code</h3>
+        <p class="org">Internship</p>
+        <p class="what">Turned an internship into a job offer and a lot of
+        bugs into slightly fewer bugs.</p>
+      </li>
+    </ul>
+  </section>
+
+  <!-- ================= WORKS ================= -->
+  <section class="view" id="view-works" hidden>
+    <!--
+      Swap each placeholder SVG for a real screenshot:
+        <figure class="media"><img src="img/trace-budget.png" alt="Trace Budget dashboard"></figure>
+    -->
+    <div class="cards stagger">
+
+      <article class="card wide">
+        <figure class="media">
+          <svg viewBox="0 0 640 400" role="img" aria-label="Trace Budget dashboard preview" preserveAspectRatio="xMidYMid slice">
+            <rect width="640" height="400" fill="#111216"/>
+            <rect width="640" height="34" fill="#191A1F"/>
+            <circle cx="20" cy="17" r="5" fill="#2A2C33"/><circle cx="38" cy="17" r="5" fill="#2A2C33"/><circle cx="56" cy="17" r="5" fill="#2A2C33"/>
+            <rect x="90" y="12" width="180" height="10" rx="5" fill="#2A2C33"/>
+            <g stroke="#22242A"><line x1="60" y1="120" x2="600" y2="120"/><line x1="60" y1="180" x2="600" y2="180"/><line x1="60" y1="240" x2="600" y2="240"/><line x1="60" y1="300" x2="600" y2="300"/></g>
+            <polyline fill="none" stroke="#E8E6E1" stroke-width="2" points="60,290 120,250 180,268 240,210 300,232 360,180 420,204 480,150 540,176 600,120"/>
+            <g fill="#191A1F" stroke="#2A2C33"><rect x="60" y="330" width="160" height="46" rx="8"/><rect x="240" y="330" width="160" height="46" rx="8"/><rect x="420" y="330" width="160" height="46" rx="8"/></g>
+            <g fill="#4A4C55"><rect x="74" y="344" width="80" height="8" rx="4"/><rect x="254" y="344" width="80" height="8" rx="4"/><rect x="434" y="344" width="80" height="8" rx="4"/></g>
+          </svg>
+        </figure>
+        <div class="body">
+          <h3>Trace Budget</h3>
+          <p class="meta">Go, ClickHouse, OpenTelemetry. 2024, in production.</p>
+          <p class="desc">Trace sampling that keeps every error and slow
+          request, and lets routine traffic share what's left of a fixed
+          budget. Cut observability spend by 60% without losing signal.</p>
+          <div class="links"><a href="#">Case study</a><a href="#">GitHub</a></div>
+        </div>
+      </article>
+
+      <article class="card">
+        <figure class="media">
+          <svg viewBox="0 0 640 400" role="img" aria-label="Migrator CLI preview" preserveAspectRatio="xMidYMid slice">
+            <rect width="640" height="400" fill="#111216"/>
+            <rect x="70" y="56" width="500" height="288" rx="12" fill="#191A1F" stroke="#2A2C33"/>
+            <circle cx="94" cy="78" r="5" fill="#2A2C33"/><circle cx="112" cy="78" r="5" fill="#2A2C33"/><circle cx="130" cy="78" r="5" fill="#2A2C33"/>
+            <g font-family="ui-monospace, monospace" font-size="14">
+              <text x="94" y="126" fill="#8F8E8A">$ migrator apply 0042_add_index</text>
+              <text x="94" y="154" fill="#E8E6E1">checking migration...</text>
+              <text x="94" y="182" fill="#FFFFFF">! destructive: DROP COLUMN legacy_id</text>
+              <text x="94" y="210" fill="#E8E6E1">type table name to confirm:</text>
+              <text x="94" y="238" fill="#8F8E8A">&gt; events_</text>
+              <text x="94" y="266" fill="#E8E6E1">applied 0042 in 312ms</text>
+            </g>
+          </svg>
+        </figure>
+        <div class="body">
+          <h3>Migrator</h3>
+          <p class="meta">Python. 2022, open source.</p>
+          <p class="desc">A schema migration CLI that refuses destructive
+          changes until a human types the table's name back. No 3 a.m.
+          pages since launch.</p>
+          <div class="links"><a href="#">GitHub</a><a href="#">Docs</a></div>
+        </div>
+      </article>
+
+      <article class="card">
+        <figure class="media">
+          <svg viewBox="0 0 640 400" role="img" aria-label="Hookline architecture preview" preserveAspectRatio="xMidYMid slice">
+            <rect width="640" height="400" fill="#111216"/>
+            <g stroke="#2A2C33" stroke-width="1.5" fill="none">
+              <path d="M180,200 C260,200 260,120 340,120"/><path d="M180,200 L340,200"/><path d="M180,200 C260,200 260,280 340,280"/>
+              <path d="M430,120 C490,120 490,180 540,190"/><path d="M430,280 C490,280 490,215 540,205"/>
+            </g>
+            <g fill="#191A1F" stroke="#2A2C33">
+              <rect rx="8" x="110" y="175" width="70" height="50"/><rect rx="8" x="340" y="95" width="90" height="50"/>
+              <rect rx="8" x="340" y="175" width="90" height="50"/><rect rx="8" x="340" y="255" width="90" height="50"/>
+              <rect rx="8" x="540" y="165" width="60" height="70"/>
+            </g>
+            <g font-family="ui-monospace, monospace" font-size="12" fill="#8F8E8A">
+              <text x="122" y="204">source</text><text x="352" y="124" fill="#FFFFFF">queue</text>
+              <text x="352" y="204">retry</text><text x="352" y="284">DLQ</text><text x="548" y="205">fanout</text>
+            </g>
+          </svg>
+        </figure>
+        <div class="body">
+          <h3>Hookline</h3>
+          <p class="meta">TypeScript, Redis, Postgres. 2021, shipped.</p>
+          <p class="desc">Webhook fan-out with at-least-once delivery,
+          exponential backoff, and a replay console for the dead-letter
+          queue. The retry logic is the product.</p>
+          <div class="links"><a href="#">Live site</a><a href="#">GitHub</a></div>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ================= USES ================= -->
+  <section class="view stagger" id="view-uses" hidden>
+    <div class="group">
+      <h2>Hardware</h2>
+      <dl class="specs">
+        <div><dt>Laptops:</dt> <dd>MacBook Pro 14" M5 Pro 24 GB &amp; M1 Pro 16 GB</dd></div>
+        <div><dt>Monitors:</dt> <dd>4x FHD 24"</dd></div>
+        <div><dt>Keyboard:</dt> <dd>Ducky One 3 SF (Cherry MX Pink)</dd></div>
+        <div><dt>Mouse:</dt> <dd>Pulsar X2H eS</dd></div>
+        <div><dt>Audio:</dt> <dd>AirPods Pro 2</dd></div>
+        <div><dt>Printers:</dt> <dd>Bambu Lab P1S, Bambu Lab A1 mini with AMS</dd></div>
+        <div><dt>Router:</dt> <dd>Ubiquiti UniFi Cloud Gateway Ultra</dd></div>
+        <div><dt>Servers:</dt> <dd>HP Mini PC i5-9500T (Proxmox), Dell T320 E5-2420 v2 (Proxmox)</dd></div>
+      </dl>
+    </div>
+
+    <div class="group">
+      <h2>Development</h2>
+      <dl class="specs">
+        <div><dt>Editor:</dt> <dd>VS Code</dd></div>
+        <div><dt>Browser:</dt> <dd>Safari</dd></div>
+        <div><dt>Containers:</dt> <dd>OrbStack</dd></div>
+      </dl>
+    </div>
+
+    <div class="group">
+      <h2>Mac config</h2>
+      <dl class="specs">
+        <div><dt>Terminal:</dt> <dd>iTerm2</dd></div>
+        <div><dt>Shell:</dt> <dd>zsh, oh-my-zsh</dd></div>
+        <div><dt>Window manager:</dt> <dd>AeroSpace</dd></div>
+      </dl>
+    </div>
+  </section>
+
+</main>
+
+<footer>© 2026 Addin Satria</footer>
+
+<script>
+  /* ---------- page switching (hash based, so back/forward and deep links work) ---------- */
+  (function(){
+    var ids = ['about','journey','works','uses'];
+    var links = [].slice.call(document.querySelectorAll('.tabs a'));
+    var main = document.getElementById('main');
+
+    function show(id, moved){
+      if (ids.indexOf(id) < 0) id = 'about';
+      ids.forEach(function(v){ document.getElementById('view-' + v).hidden = v !== id; });
+      links.forEach(function(a){
+        if (a.getAttribute('href') === '#' + id) a.setAttribute('aria-current', 'page');
+        else a.removeAttribute('aria-current');
+      });
+      if (moved){
+        window.scrollTo(0, 0);
+        main.focus({ preventScroll: true });
+      }
+    }
+
+    window.addEventListener('hashchange', function(){ show(location.hash.slice(1), true); });
+    show(location.hash.slice(1), false);
+  })();
+
+  /* ---------- organic tendril field: drifting hyphae that grow, wander, and curl ---------- */
+  (function(){
+    var canvas = document.getElementById('field');
+    if (!canvas || !canvas.getContext) return;
+    var ctx = canvas.getContext('2d');
+    var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    var W = 0, H = 0, vines = [];
+    var tints = ['128,150,220', '210,175,125', '130,205,185'];
+
+    function makeVine(){
+      var x = Math.random() * W, y = Math.random() * H;
+      var a = Math.random() * Math.PI * 2;
+      return {
+        x: x, y: y, a: a,                      /* tip position + heading  */
+        px: x, py: y,                          /* previous tip, for fades */
+        speed: 8 + Math.random() * 14,         /* px per second           */
+        curve: (Math.random() - .5) * .5,      /* resting turn rate rad/s */
+        wobPhase: Math.random() * Math.PI * 2, /* organic wobble          */
+        wobFreq: .25 + Math.random() * .5,
+        wobAmp: .25 + Math.random() * .45,
+        life: 0,
+        maxLife: 14 + Math.random() * 16,      /* seconds before it fades */
+        hue: Math.random() < .22 ? tints[(Math.random() * 3) | 0] : '232,230,225',
+        width: .6 + Math.random() * .8,
+        fading: false,
+        fade: 1
+      };
+    }
+
+    function seed(){
+      vines = [];
+      var count = Math.max(7, Math.min(16, Math.round((W * H) / 110000)));
+      for (var i = 0; i < count; i++){
+        var v = makeVine();
+        v.life = Math.random() * v.maxLife;    /* desync the lifecycles */
+        vines.push(v);
+      }
+    }
+
+    function resize(){
+      var dpr = Math.min(window.devicePixelRatio || 1, 2);
+      W = window.innerWidth; H = window.innerHeight;
+      canvas.width = W * dpr; canvas.height = H * dpr;
+      canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      seed();
+      if (reduce) drawStatic();
+    }
+
+    function drawStatic(){
+      /* one hand-calculated pass so static viewers still see the field */
+      var v;
+      for (var i = 0; i < vines.length; i++){
+        v = vines[i];
+        for (var s = 0; s < 90; s++) step(v, 0.1);
+      }
+    }
+
+    function step(v, dt){
+      v.wobPhase += v.wobFreq * dt;
+      var turn = v.curve + Math.sin(v.wobPhase) * v.wobAmp;
+      v.a += turn * dt;
+      v.px = v.x; v.py = v.y;
+      v.x += Math.cos(v.a) * v.speed * dt;
+      v.y += Math.sin(v.a) * v.speed * dt;
+      v.life += dt;
+    }
+
+    function updateAndDraw(dt){
+      for (var i = 0; i < vines.length; i++){
+        var v = vines[i];
+
+        if (v.fading){
+          v.fade -= dt * .35;
+          if (v.fade <= 0){ vines[i] = makeVine(); continue; }
+        } else {
+          /* steer away from edges, softly (exponential turn, ~2s to reverse) */
+          var m = 60;
+          if (v.x < m)          v.a += (0        - v.a) * .5 * dt;
+          else if (v.x > W - m) v.a += (Math.PI  - v.a) * .5 * dt;
+          if (v.y < m)          v.a += (Math.PI/2 - v.a) * .5 * dt;
+          else if (v.y > H - m) v.a += (-Math.PI/2 - v.a) * .5 * dt;
+          if (v.x < -40 || v.x > W + 40 || v.y < -40 || v.y > H + 40) v.fading = true;
+          if (v.life > v.maxLife) v.fading = true;
+          step(v, dt);
+        }
+
+        var alpha = .10 * v.fade;
+        if (alpha <= .004) continue;
+        ctx.strokeStyle = 'rgba(' + v.hue + ',' + alpha.toFixed(3) + ')';
+        ctx.lineWidth = v.width;
+        ctx.beginPath();
+        ctx.moveTo(v.px, v.py);
+        ctx.lineTo(v.x, v.y);
+        ctx.stroke();
+
+        /* faint tip node while the tendril is alive */
+        if (!v.fading){
+          ctx.fillStyle = 'rgba(' + v.hue + ',' + (0.22 * v.fade).toFixed(3) + ')';
+          ctx.beginPath(); ctx.arc(v.x, v.y, 1.1, 0, Math.PI * 2); ctx.fill();
+        }
+      }
+    }
+
+    /* fade overlay instead of clear: old strokes dissolve like memories */
+    function veil(dt){
+      ctx.fillStyle = 'rgba(0,0,0,' + Math.min(.25, dt * 2.2).toFixed(3) + ')';
+      ctx.fillRect(0, 0, W, H);
+    }
+
+    var last = 0;
+    function frame(ts){
+      var t = ts / 1000;
+      var dt = Math.min(.05, Math.max(0, t - last));
+      last = t;
+      veil(dt);
+      updateAndDraw(dt);
+      requestAnimationFrame(frame);
+    }
+
+    window.addEventListener('resize', resize);
+    resize();
+    if (!reduce) requestAnimationFrame(frame);
+  })();
+
+</script>
+
+</body>
+</html>
