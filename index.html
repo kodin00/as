@@ -287,13 +287,28 @@
   @media (max-width:500px){.project-grid{grid-template-columns:1fr;gap:30px}.works-heading{margin-bottom:24px}}
 
   /* ---------- find-me line ---------- */
-  .findme-line{margin-top:14px !important;display:flex;align-items:center;gap:14px}
+  .findme-line{margin-top:14px !important;display:flex;align-items:center;gap:8px}
   .findme-line a{
-    display:inline-flex;align-items:center;justify-content:center;
-    width:32px;height:32px;color:var(--muted);transition:color .2s;
+    position:relative;isolation:isolate;display:grid;place-items:center;
+    width:64px;height:64px;flex:none;border-radius:50%;color:#d4d1c3;
+    background:url("assets/round-button.webp") center/contain no-repeat;
+    touch-action:manipulation;
   }
-  .findme-line a:hover{color:var(--white)}
-  .findme-line svg{display:block;width:21px;height:21px;fill:currentColor}
+  .findme-line a::before,.findme-line a::after{
+    content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
+    background:center/contain no-repeat;clip-path:circle(32% at 50% 50%);
+    opacity:0;transition:opacity .16s,transform .12s;
+  }
+  .findme-line a::before{background-image:url("assets/round-button-hover.webp")}
+  .findme-line a::after{background-image:url("assets/round-button-pressed.webp")}
+  .findme-line a:hover::before,.findme-line a:focus-visible::before{opacity:1}
+  .findme-line a:active::after{opacity:1;transform:translateY(2px) scale(.98)}
+  .findme-line svg{display:block;width:22px;height:22px;fill:currentColor;transition:transform .12s,color .18s}
+  .findme-line a:hover svg{color:#f5d5a0}
+  .findme-line a:active svg{transform:translateY(3px) scale(.97)}
+  .findme-line .email-icon{fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+  @media (prefers-reduced-motion:reduce){.findme-line a::before,.findme-line a::after,.findme-line svg{transition:none}}
+
 
   /* ---------- uses ---------- */
   .back{display:inline-block;font-size:14px;margin-bottom:28px}
@@ -378,7 +393,8 @@
     <a href="#uses">hardware/software I use</a>.</div>
     <div class="findme-line">
     <a href="https://www.linkedin.com/in/addinsatria/" rel="noopener" aria-label="LinkedIn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.45 2H3.55C2.69 2 2 2.68 2 3.52v16.96C2 21.32 2.69 22 3.55 22h16.9c.86 0 1.55-.68 1.55-1.52V3.52C22 2.68 21.31 2 20.45 2ZM7.93 18.75H4.96V9.2h2.97v9.55ZM6.44 7.89a1.72 1.72 0 1 1 0-3.44 1.72 1.72 0 0 1 0 3.44Zm12.31 10.86h-2.96V14.1c0-1.1-.02-2.52-1.54-2.52-1.54 0-1.78 1.2-1.78 2.44v4.73H9.51V9.2h2.84v1.3h.04a3.12 3.12 0 0 1 2.81-1.54c3.01 0 3.55 1.98 3.55 4.55v5.24Z"/></svg></a>
-    <a href="https://github.com/kodin00" rel="noopener" aria-label="GitHub"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .9a11.1 11.1 0 0 0-3.51 21.63c.55.1.76-.24.76-.54v-2.13c-3.09.67-3.74-1.32-3.74-1.32-.5-1.28-1.23-1.62-1.23-1.62-1.01-.69.08-.68.08-.68 1.12.08 1.7 1.15 1.7 1.15.99 1.7 2.6 1.21 3.23.93.1-.72.39-1.21.7-1.49-2.47-.28-5.06-1.23-5.06-5.49 0-1.21.43-2.2 1.14-2.98-.11-.28-.49-1.41.11-2.94 0 0 .93-.3 3.05 1.14a10.62 10.62 0 0 1 5.55 0c2.12-1.44 3.04-1.14 3.04-1.14.61 1.53.23 2.66.12 2.94.71.78 1.14 1.77 1.14 2.98 0 4.27-2.6 5.2-5.08 5.48.4.35.76 1.02.76 2.06v3.11c0 .3.2.65.76.54A11.1 11.1 0 0 0 12 .9Z"/></svg></a></div>
+    <a href="https://github.com/kodin00" rel="noopener" aria-label="GitHub"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .9a11.1 11.1 0 0 0-3.51 21.63c.55.1.76-.24.76-.54v-2.13c-3.09.67-3.74-1.32-3.74-1.32-.5-1.28-1.23-1.62-1.23-1.62-1.01-.69.08-.68.08-.68 1.12.08 1.7 1.15 1.7 1.15.99 1.7 2.6 1.21 3.23.93.1-.72.39-1.21.7-1.49-2.47-.28-5.06-1.23-5.06-5.49 0-1.21.43-2.2 1.14-2.98-.11-.28-.49-1.41.11-2.94 0 0 .93-.3 3.05 1.14a10.62 10.62 0 0 1 5.55 0c2.12-1.44 3.04-1.14 3.04-1.14.61 1.53.23 2.66.12 2.94.71.78 1.14 1.77 1.14 2.98 0 4.27-2.6 5.2-5.08 5.48.4.35.76 1.02.76 2.06v3.11c0 .3.2.65.76.54A11.1 11.1 0 0 0 12 .9Z"/></svg></a>
+    <a href="mailto:hi@addinsatria.com" aria-label="Email hi@addinsatria.com"><svg class="email-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5.5h18v13H3zM3.5 6l8.5 7 8.5-7"/></svg></a></div>
   </section>
 
   <!-- ================= JOURNEY ================= -->
