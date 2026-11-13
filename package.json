@@ -1,0 +1,7 @@
+{
+  "name": "addinsatria-site",
+  "private": true,
+  "devDependencies": {
+    "wrangler": "4.161.0"
+  }
+}
