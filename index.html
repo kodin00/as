@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="dark">
 <title>Addin Satria</title>
-<link rel="icon" type="image/png" href="logo.png">
-<link rel="apple-touch-icon" href="logo.png">
+<link rel="icon" type="image/png" href="assets/icon.png">
+<link rel="apple-touch-icon" href="assets/icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -40,59 +40,36 @@
   #field{position:absolute;inset:0;display:block}
   .topbar, main, footer{position:relative;z-index:1}
 
-  /* ---------- corner artwork ---------- */
-  .corner-art{
-    position:fixed;right:0;bottom:0;z-index:0;pointer-events:none;
-    width:min(240px,28vw);
-    opacity:0;animation:fadein 1.2s ease-out .9s both;
-    transform:rotate(180deg);
-    -webkit-mask-image:linear-gradient(315deg,#000 55%,transparent 98%);
-            mask-image:linear-gradient(315deg,#000 55%,transparent 98%);
-  }
-  .corner-art img{display:block;width:100%;height:auto}
-
   /* ---------- top bar ---------- */
   .topbar .inner{
-    padding:0 32px;height:64px;
+    padding:0 32px;height:120px;
     display:flex;align-items:center;justify-content:space-between;gap:16px;
   }
   .mark{
     display:flex;align-items:center;gap:8px;
     font:600 17px/1 var(--sans);letter-spacing:.08em;color:var(--white);
   }
-  .mark img{width:40px;height:40px;border-radius:8px;display:block;object-fit:cover}
-  /* A single ribbed housing holds the page links, like the reference's metal rail. */
-  .topbar nav{min-width:0}
+  .mark img{width:76px;height:76px;display:block;object-fit:contain}
+  /* Generated biomechanical housing; the labels remain real navigation links. */
+  .topbar nav{width:420px;max-width:calc(100vw - 104px);flex:none}
   .tabs{
-    position:relative;display:flex;align-items:center;gap:0;
-    list-style:none;margin:0;padding:7px 17px;
-    isolation:isolate;
-    border:1px solid #555450;border-radius:24px;
-    background:
-      repeating-linear-gradient(90deg,transparent 0 7px,rgba(205,201,187,.12) 8px,transparent 9px 13px) top/100% 5px no-repeat,
-      repeating-linear-gradient(90deg,transparent 0 7px,rgba(205,201,187,.11) 8px,transparent 9px 13px) bottom/100% 5px no-repeat,
-      linear-gradient(180deg,#777671 0%,#252522 8%,#080909 20%,#111110 50%,#050606 76%,#292927 93%,#686761 100%);
-    box-shadow:0 2px 8px #000,inset 0 0 0 2px #101110,inset 0 1px 2px rgba(255,255,255,.25);
+    display:flex;align-items:center;justify-content:center;
+    list-style:none;margin:0;padding:0 13%;
+    width:100%;aspect-ratio:3 / 1;
+    background:url("assets/nav-biomechanical.webp") center / 100% 100% no-repeat;
   }
-  .tabs::before,.tabs::after{
-    content:"";position:absolute;top:7px;bottom:7px;width:12px;z-index:-1;
-    border:1px solid #55544f;border-radius:50%;
-    background:repeating-linear-gradient(90deg,#111 0 2px,#55544e 3px,#171817 4px 5px);
-    box-shadow:inset 0 0 4px #000,0 0 3px #000;
-  }
-  .tabs::before{left:4px;transform:rotate(-12deg)}
-  .tabs::after{right:4px;transform:rotate(12deg)}
-  .tabs li+li{border-left:1px solid rgba(185,182,170,.16)}
+  .tabs li{flex:1;text-align:center}
+  .tabs li+li{border-left:1px solid rgba(200,197,186,.18)}
   .tabs a{
-    position:relative;display:block;padding:9px 14px;
-    font:400 12px/1 Georgia,serif;letter-spacing:.1em;text-transform:uppercase;
-    color:#999791;white-space:nowrap;transition:color .2s,text-shadow .2s;
+    position:relative;display:block;padding:9px 4px;
+    font:400 12px/1 Georgia,serif;letter-spacing:.12em;text-transform:uppercase;
+    color:#a19d95;white-space:nowrap;transition:color .2s,text-shadow .2s;
   }
-  .tabs a:hover{color:#eceae3;text-shadow:0 0 8px rgba(238,235,219,.35)}
-  .tabs a[aria-current="page"]{color:#f1eee5;text-shadow:0 0 9px rgba(240,236,220,.55)}
+  .tabs a:hover{color:#f2eee4;text-shadow:0 0 8px rgba(238,235,219,.45)}
+  .tabs a[aria-current="page"]{color:#f4f0e6;text-shadow:0 0 10px rgba(240,236,220,.65)}
   .tabs a[aria-current="page"]::after{
-    content:"";position:absolute;bottom:0;left:25%;right:25%;height:1px;
-    background:linear-gradient(90deg,transparent,#ddd9c9,transparent);
+    content:"";position:absolute;bottom:2px;left:30%;right:30%;height:1px;
+    background:linear-gradient(90deg,transparent,#dedacf,transparent);
     box-shadow:0 0 6px 1px rgba(232,228,211,.5);
   }
   .tabs a:focus-visible{outline:1px solid #f1eee5;outline-offset:-3px;border-radius:3px}
@@ -114,19 +91,66 @@
     display:flex;align-items:center;gap:16px;flex-wrap:wrap;
   }
   #view-about p{color:var(--text)}
-  #view-about p.uses-line{margin-top:36px;color:var(--muted)}
+  #view-about .uses-line{margin-top:36px;color:var(--text)}
   .uses-line a, .back{color:var(--white);font-weight:500}
   .uses-line a:hover, .back:hover{text-decoration:underline;text-underline-offset:5px;text-decoration-thickness:1px}
 
   /* ---------- org logos: fly in from the right, 1-by-1, with trail + impact ---------- */
   .logos{display:flex;align-items:center;gap:8px}
   .logo{
-    position:relative;width:30px;height:30px;border-radius:7px;flex:none;
-    background:#26272C;border:1px solid rgba(255,255,255,.16);
+    position:relative;width:48px;height:48px;flex:none;
+    background:#000;
     display:flex;align-items:center;justify-content:center;
     font:600 13px/1 var(--sans);color:var(--white);
     opacity:0;
     animation:logoFlyIn .9s cubic-bezier(.18,.8,.3,1) both;
+  }
+  /* Five generated frames, played in sequence as the eyelid opens and blinks. */
+  .eye{
+    position:relative;display:flex;align-items:center;justify-content:center;
+    width:100%;height:100%;overflow:hidden;
+    background:#000 url("assets/eye-frames.webp") 0% center / 500% auto no-repeat;
+    animation:eyeOpen .5s steps(1,end) 2.28s both;
+  }
+  .eye-mark{
+    position:relative;color:#f1efe8;font:600 10px/1 var(--sans);
+    text-shadow:0 0 3px #000,0 0 6px #000;
+    animation:markOpen .5s steps(1,end) 2.28s both;
+  }
+  .eye-mark img{display:block;width:20px;height:20px;object-fit:contain;filter:grayscale(1) invert(1) contrast(2);mix-blend-mode:screen}
+  .eye-mark img.transparent-logo{filter:brightness(0) invert(1)}
+  .eye-mark.logo-image{width:20px;height:20px;overflow:hidden}
+  .eye-mark.logo-image img{transform:translateX(2px) scale(1.5);filter:grayscale(1) invert(1) contrast(3) brightness(4)}
+  @keyframes eyeOpen{
+    0%{background-position:0% center} 20%{background-position:25% center}
+    40%{background-position:50% center} 60%{background-position:75% center}
+    80%,100%{background-position:100% center}
+  }
+  @keyframes markOpen{0%,40%{opacity:0} 60%,100%{opacity:1}}
+  .eye.is-ready{animation:none;background-position:100% center}
+  .eye.is-ready .eye-mark{animation:none;opacity:1}
+  .eye.is-ready.is-blinking{animation:eyeBlink .5s steps(1,end) both}
+  .eye.is-ready.is-blinking .eye-mark{animation:markBlink .5s steps(1,end) both}
+  @keyframes eyeBlink{
+    0%,100%{background-position:100% center} 12%,87%{background-position:75% center}
+    25%,75%{background-position:50% center} 37%,62%{background-position:25% center}
+    50%{background-position:0% center}
+  }
+  @keyframes markBlink{0%,25%,75%,100%{opacity:1} 37%,62%{opacity:0}}
+  .logo:hover .eye,.logo:focus-within .eye{animation:none;background-position:100% center}
+  .logo:hover .eye-mark,.logo:focus-within .eye-mark{animation:none;opacity:1}
+  .logo:focus-visible{outline:1px solid #d6d2c6;outline-offset:3px;border-radius:6px}
+  .logo-label{
+    position:absolute;z-index:5;bottom:calc(100% + 10px);left:50%;
+    transform:translate(-50%,4px);padding:7px 10px;
+    border:1px solid #55544e;border-radius:4px;
+    background:linear-gradient(#222320,#0a0b0a);box-shadow:0 4px 12px #000;
+    color:#e8e5dc;font:400 11px/1.2 var(--sans);white-space:nowrap;
+    opacity:0;visibility:hidden;pointer-events:none;
+    transition:opacity .16s,transform .16s,visibility .16s;
+  }
+  .logo:hover .logo-label,.logo:focus-visible .logo-label{
+    opacity:1;visibility:visible;transform:translate(-50%,0);
   }
   /* light trail streaming behind the tile (it flies right-to-left) */
   .logo::before{
@@ -257,9 +281,13 @@
   .card .links a:hover{text-decoration:underline;text-underline-offset:4px}
 
   /* ---------- find-me line ---------- */
-  .findme-line{margin-top:14px !important}
-  .findme-line a{color:var(--white);font-weight:500}
-  .findme-line a:hover{text-decoration:underline;text-underline-offset:5px;text-decoration-thickness:1px}
+  .findme-line{margin-top:14px !important;display:flex;align-items:center;gap:14px}
+  .findme-line a{
+    display:inline-flex;align-items:center;justify-content:center;
+    width:32px;height:32px;color:var(--muted);transition:color .2s;
+  }
+  .findme-line a:hover{color:var(--white)}
+  .findme-line svg{display:block;width:21px;height:21px;fill:currentColor}
 
   /* ---------- uses ---------- */
   .back{display:inline-block;font-size:14px;margin-bottom:28px}
@@ -273,36 +301,43 @@
   .specs dd{display:inline;margin:0;color:var(--muted);font-size:15px}
 
   footer{
-    border-top:1px solid var(--line);width:100%;max-width:var(--col);margin:0 auto;
-    padding:22px 24px 34px;color:var(--muted);font-size:13px;
+    width:100%;margin:0 auto;padding:0 0 20px;
+    color:var(--muted);font-size:13px;text-align:center;
   }
+  .footer-ornament{
+    width:85%;aspect-ratio:7.5 / 1;margin:0 auto;
+    background:url("assets/footer-biomechanical.webp") center / 100% auto no-repeat;
+    pointer-events:none;
+  }
+  footer p{margin:0;padding:0 24px}
 
   @media (max-width:720px){
     main{padding-top:48px}
     .cards{grid-template-columns:1fr}
-    .corner-art{display:none}
   }
   @media (max-width:420px){
     .topbar .inner{padding:0 16px}
-    .tabs{padding:6px 13px}
-    .tabs a{padding:9px 8px;font-size:10px;letter-spacing:.06em}
+    .topbar .inner{height:92px}
+    .mark img{width:54px;height:54px}
+    .tabs a{padding:8px 2px;font-size:9px;letter-spacing:.04em}
   }
   @media (prefers-reduced-motion:reduce){
-    .stagger,.logo,.logo::before,.logo::after,.timeline,.corner-art,
+    .stagger,.logo,.logo::before,.logo::after,.timeline,
     .timeline li::before,.timeline li::after{animation:none}
-    .logo,.timeline li::before,.timeline li::after,.corner-art{opacity:1}
+    .logo,.timeline li::before,.timeline li::after{opacity:1}
     .logo::before,.logo::after{display:none}
+    .eye{animation:none;background-position:100% center}
+    .eye-mark{animation:none;opacity:1}
   }
 </style>
 </head>
 <body>
 
 <div id="sky" aria-hidden="true"><canvas id="field"></canvas></div>
-<div class="corner-art" aria-hidden="true"><img src="corner.png" alt=""></div>
 
 <header class="topbar">
   <div class="inner">
-    <a class="mark" href="#about" aria-label="Addin Satria, home"><img src="logo.png" alt=""></a>
+    <a class="mark" href="#about" aria-label="Addin Satria, home"><img src="assets/as-biomechanical.webp" alt=""></a>
     <nav aria-label="Pages">
       <ul class="tabs">
         <li><a href="#about">About</a></li>
@@ -317,36 +352,29 @@
 
   <!-- ================= ABOUT ================= -->
   <section class="view stagger" id="view-about">
-    <h1>Addin Satria<span class="logos" aria-label="Companies and universities">
-      <span class="logo"><span>A</span></span>
-      <span class="logo"><span>B</span></span>
-      <span class="logo"><span>C</span></span>
-      <span class="logo"><span>D</span></span>
-      <span class="logo"><span>E</span></span>
+    <h1>Addin Satria<span class="logos" role="group" aria-label="Companies and universities">
+      <span class="logo" tabindex="0" role="img" aria-label="Mekari"><span class="eye"><span class="eye-mark"><img src="assets/mekari.webp" alt=""></span></span><span class="logo-label" aria-hidden="true">Mekari</span></span>
+      <span class="logo" tabindex="0" role="img" aria-label="Nusensia"><span class="eye"><span class="eye-mark"><img class="transparent-logo" src="assets/nusensia.webp" alt=""></span></span><span class="logo-label" aria-hidden="true">Nusensia</span></span>
+      <span class="logo" tabindex="0" role="img" aria-label="Binus University"><span class="eye"><span class="eye-mark logo-image"><img src="assets/binus.webp" alt=""></span></span><span class="logo-label" aria-hidden="true">Binus University</span></span>
+      <span class="logo" tabindex="0" role="img" aria-label="IDN Boarding School"><span class="eye"><span class="eye-mark"><img class="transparent-logo" src="assets/idn.webp" alt=""></span></span><span class="logo-label" aria-hidden="true">IDN Boarding School</span></span>
     </span></h1>
-    <p class="lede">I'm a software engineer who builds backend systems and
-    the tools that keep them running.</p>
-    <p>I've been writing software professionally for about eight years,
-    mostly on the layer where products actually live: APIs, queues,
-    databases, and the pipelines between them. These days I work on
-    platform and infrastructure, making it easier for other engineers to
-    ship without worrying about what's underneath.</p>
-    <p>I believe a system that needs a hero is a broken system. I build for
-    the person who gets paged at 3 a.m., which is usually me, so I care
-    about good defaults, loud failures, and docs that tell the truth. The
-    best compliment I get is when someone forgets my service exists.</p>
-    <p>I like small teams, clear ownership, and code reviews that leave both
-    the code and the reviewer better. I'd rather delete a feature than
-    maintain one nobody uses, and I always ask for the number before I agree
-    that something is slow.</p>
-    <p>Outside work I mentor junior engineers, write the occasional post
-    about systems design, and spend far too long tuning my dotfiles. I'm
-    based in Jakarta and currently open to new roles, remote or hybrid.</p>
-    <p class="uses-line">If you're interested, here's the
-    <a href="#uses">hardware/software I use</a>.</p>
-    <p class="findme-line">You can also find me here:
-    <a href="#" rel="noopener">LinkedIn</a> &middot;
-    <a href="#" rel="noopener">GitHub</a></p>
+    <p class="lede">Built my first PC at 14 and have been part of PCMR ever
+    since. That curiosity led to mobile development, starting with iOS and
+    SwiftUI, then backend work with Vapor. Along the way came networking,
+    two MikroTik certifications, and Flutter.</p>
+    <p>From there, the focus shifted toward DevOps and experimenting with a
+    homelab and home servers. A fast learner who's always improving, I care
+    about reliable systems, understanding how things work, and automating
+    tasks that happen often enough to deserve it.</p>
+    <p>Currently deepening my knowledge of DevSecOps and site reliability
+    engineering, while open to opportunities in those and similar roles.
+    There is always another system to understand, a process to improve, or
+    something new to try in the homelab.</p>
+    <div class="uses-line">If you're interested, here's the
+    <a href="#uses">hardware/software I use</a>.</div>
+    <div class="findme-line">
+    <a href="#" rel="noopener" aria-label="LinkedIn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.45 2H3.55C2.69 2 2 2.68 2 3.52v16.96C2 21.32 2.69 22 3.55 22h16.9c.86 0 1.55-.68 1.55-1.52V3.52C22 2.68 21.31 2 20.45 2ZM7.93 18.75H4.96V9.2h2.97v9.55ZM6.44 7.89a1.72 1.72 0 1 1 0-3.44 1.72 1.72 0 0 1 0 3.44Zm12.31 10.86h-2.96V14.1c0-1.1-.02-2.52-1.54-2.52-1.54 0-1.78 1.2-1.78 2.44v4.73H9.51V9.2h2.84v1.3h.04a3.12 3.12 0 0 1 2.81-1.54c3.01 0 3.55 1.98 3.55 4.55v5.24Z"/></svg></a>
+    <a href="#" rel="noopener" aria-label="GitHub"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .9a11.1 11.1 0 0 0-3.51 21.63c.55.1.76-.24.76-.54v-2.13c-3.09.67-3.74-1.32-3.74-1.32-.5-1.28-1.23-1.62-1.23-1.62-1.01-.69.08-.68.08-.68 1.12.08 1.7 1.15 1.7 1.15.99 1.7 2.6 1.21 3.23.93.1-.72.39-1.21.7-1.49-2.47-.28-5.06-1.23-5.06-5.49 0-1.21.43-2.2 1.14-2.98-.11-.28-.49-1.41.11-2.94 0 0 .93-.3 3.05 1.14a10.62 10.62 0 0 1 5.55 0c2.12-1.44 3.04-1.14 3.04-1.14.61 1.53.23 2.66.12 2.94.71.78 1.14 1.77 1.14 2.98 0 4.27-2.6 5.2-5.08 5.48.4.35.76 1.02.76 2.06v3.11c0 .3.2.65.76.54A11.1 11.1 0 0 0 12 .9Z"/></svg></a></div>
   </section>
 
   <!-- ================= JOURNEY ================= -->
@@ -513,14 +541,17 @@
       <dl class="specs">
         <div><dt>Terminal:</dt> <dd>iTerm2</dd></div>
         <div><dt>Shell:</dt> <dd>zsh, oh-my-zsh</dd></div>
-        <div><dt>Window manager:</dt> <dd>AeroSpace</dd></div>
+        <div><dt>Window manager:</dt> <dd>AeroSpace (I love Hyprland on Arch (btw), but I have to use a Mac for work (the performance is insane))</dd></div>
       </dl>
     </div>
   </section>
 
 </main>
 
-<footer>© 2026 Addin Satria</footer>
+<footer>
+  <div class="footer-ornament" aria-hidden="true"></div>
+  <p>© 2026 Addin Satria</p>
+</footer>
 
 <script>
   /* ---------- page switching (hash based, so back/forward and deep links work) ---------- */
@@ -544,6 +575,22 @@
 
     window.addEventListener('hashchange', function(){ show(location.hash.slice(1), true); });
     show(location.hash.slice(1), false);
+  })();
+
+  /* Once the last tile has landed, blink each eye on its own schedule. */
+  (function(){
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    document.querySelectorAll('.eye').forEach(function(eye){
+      function schedule(){
+        window.setTimeout(function(){
+          if (!document.hidden && !eye.closest('.logo').matches(':hover, :focus-within')){
+            eye.classList.add('is-blinking');
+            window.setTimeout(function(){ eye.classList.remove('is-blinking'); schedule(); }, 500);
+          } else schedule();
+        }, 2500 + Math.random() * 6500);
+      }
+      window.setTimeout(function(){ eye.classList.add('is-ready'); schedule(); }, 2780);
+    });
   })();
 
   /* ---------- organic tendril field: drifting hyphae that grow, wander, and curl ---------- */
