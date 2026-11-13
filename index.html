@@ -9,7 +9,7 @@
 <link rel="apple-touch-icon" href="assets/icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600&family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
     --bg:#000000;                     /* black */
@@ -86,9 +86,13 @@
 
   /* ---------- about ---------- */
   h1{
-    font:600 clamp(22px,3.5vw,30px)/1.2 var(--sans);letter-spacing:-.015em;
     color:var(--white);margin:0 0 14px;
     display:flex;align-items:center;gap:16px;flex-wrap:wrap;
+  }
+  .name{
+    font:600 clamp(24px,3.5vw,31px)/1.2 "Cinzel", Georgia, serif;
+    letter-spacing:.045em;color:#e8e6df;
+    text-shadow:0 1px 0 #686863,0 0 14px rgba(225,222,208,.16);
   }
   #view-about p{color:var(--text)}
   #view-about .uses-line{margin-top:36px;color:var(--text)}
@@ -264,21 +268,23 @@
   .view .what{font-size:15px;max-width:58ch}
 
   /* ---------- works ---------- */
-  .cards{display:grid;grid-template-columns:1fr 1fr;gap:24px}
-  .card{
-    background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
-    overflow:hidden;display:flex;flex-direction:column;
+  main:has(#view-works:not([hidden])){max-width:1100px}
+  .works-heading{
+    margin:0 0 30px;font:500 clamp(30px,5vw,48px)/1.15 var(--sans);
+    color:#a19e94;letter-spacing:.03em;
   }
-  .card.wide{grid-column:1 / -1}
-  .media{aspect-ratio:16/10;background:#1A1B1F;border-bottom:1px solid var(--line);margin:0;overflow:hidden;flex:none}
-  .media img, .media svg{width:100%;height:100%;display:block;object-fit:cover}
-  .card .body{padding:22px 22px 24px;display:flex;flex-direction:column;flex:1}
-  .card h3{font:500 17px/1.3 var(--sans);color:var(--white);margin:0 0 4px}
-  .view .meta{font-size:13px;margin:0}
-  .view .desc{font-size:14.5px;margin:12px 0 16px;flex:1}
-  .card .links{display:flex;gap:18px;font-size:14px}
-  .card .links a{color:var(--white)}
-  .card .links a:hover{text-decoration:underline;text-underline-offset:4px}
+  .project-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+  .works-section + .works-section{margin-top:70px}
+  .project{display:grid;grid-template-columns:42px minmax(0,1fr);align-content:start;gap:16px;padding:20px;border:1px solid rgba(194,190,178,.18);border-radius:8px;background:linear-gradient(145deg,rgba(35,35,33,.7),rgba(10,11,10,.85))}
+  .project-icon{width:42px;height:42px;color:#a7a49b;display:flex;align-items:center;justify-content:center}
+  .project-icon svg{display:block;width:32px;height:32px;fill:none;stroke:currentColor;stroke-width:1.3;stroke-linecap:round;stroke-linejoin:round}
+  .project h3{font:500 16px/1.4 var(--sans);color:var(--white);margin:0 0 5px}
+  .view .project p{font-size:13px;line-height:1.65;margin:0;color:var(--muted)}
+  .project-links{display:flex;flex-wrap:wrap;gap:14px;margin-top:12px;font-size:12px}
+  .project-links a{color:#c9c6bc}
+  .project-links a:hover{color:var(--white);text-decoration:underline;text-underline-offset:4px}
+  @media (max-width:720px){.project-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+  @media (max-width:500px){.project-grid{grid-template-columns:1fr;gap:30px}.works-heading{margin-bottom:24px}}
 
   /* ---------- find-me line ---------- */
   .findme-line{margin-top:14px !important;display:flex;align-items:center;gap:14px}
@@ -313,7 +319,6 @@
 
   @media (max-width:720px){
     main{padding-top:48px}
-    .cards{grid-template-columns:1fr}
   }
   @media (max-width:420px){
     .topbar .inner{padding:0 16px}
@@ -352,24 +357,23 @@
 
   <!-- ================= ABOUT ================= -->
   <section class="view stagger" id="view-about">
-    <h1>Addin Satria<span class="logos" role="group" aria-label="Companies and universities">
+    <h1><span class="name">Addin Satria</span><span class="logos" role="group" aria-label="Companies and universities">
       <span class="logo" tabindex="0" role="img" aria-label="Mekari"><span class="eye"><span class="eye-mark"><img src="assets/mekari.webp" alt=""></span></span><span class="logo-label" aria-hidden="true">Mekari</span></span>
       <span class="logo" tabindex="0" role="img" aria-label="Nusensia"><span class="eye"><span class="eye-mark"><img class="transparent-logo" src="assets/nusensia.webp" alt=""></span></span><span class="logo-label" aria-hidden="true">Nusensia</span></span>
       <span class="logo" tabindex="0" role="img" aria-label="Binus University"><span class="eye"><span class="eye-mark logo-image"><img src="assets/binus.webp" alt=""></span></span><span class="logo-label" aria-hidden="true">Binus University</span></span>
       <span class="logo" tabindex="0" role="img" aria-label="IDN Boarding School"><span class="eye"><span class="eye-mark"><img class="transparent-logo" src="assets/idn.webp" alt=""></span></span><span class="logo-label" aria-hidden="true">IDN Boarding School</span></span>
     </span></h1>
-    <p class="lede">Built my first PC at 14 and have been part of PCMR ever
-    since. That curiosity led to mobile development, starting with iOS and
-    SwiftUI, then backend work with Vapor. Along the way came networking,
-    two MikroTik certifications, and Flutter.</p>
-    <p>From there, the focus shifted toward DevOps and experimenting with a
-    homelab and home servers. A fast learner who's always improving, I care
-    about reliable systems, understanding how things work, and automating
-    tasks that happen often enough to deserve it.</p>
-    <p>Currently deepening my knowledge of DevSecOps and site reliability
-    engineering, while open to opportunities in those and similar roles.
-    There is always another system to understand, a process to improve, or
-    something new to try in the homelab.</p>
+    <p class="lede">Software developer with a privacy-first mindset and a
+    soft spot for reliable systems. I like learning how things work, picking
+    up new skills, and automating the stuff that keeps coming up.</p>
+    <p>The journey started with iOS and SwiftUI, then took a detour through
+    Vapor for backend Swift, networking and two MikroTik certifications,
+    Flutter, and eventually DevOps. These days, the homelab and home servers
+    are where a lot of the experimenting happens.</p>
+    <p>Currently digging deeper into DevSecOps and SRE, and open to similar
+    roles. Outside of that, I've been a PCMR member since building my first
+    PC at 14, and there's usually something in the setup that could use
+    a little more tinkering.</p>
     <div class="uses-line">If you're interested, here's the
     <a href="#uses">hardware/software I use</a>.</div>
     <div class="findme-line">
@@ -381,133 +385,74 @@
   <section class="view" id="view-journey" hidden>
     <ul class="timeline stagger">
       <li>
-        <p class="when">2023 to now</p>
-        <h3>Senior Software Engineer</h3>
-        <p class="org">Tech company, platform team</p>
-        <p class="what">Own the platform everything else sits on: service
-        templates, deploy pipelines, and the observability stack. Cut
-        tracing costs by 60% with sampling that never drops the traces that
-        matter.</p>
+        <h3>Mobile Platform Engineer</h3>
+        <p class="org">Mekari · #1 SaaS company · Platform team</p>
+        <p class="what">Working on the platform behind mobile development,
+        with an eye on reliable foundations and a smoother experience for
+        the engineers building on top of them.</p>
       </li>
       <li>
-        <p class="when">2021 to 2023</p>
-        <h3>Backend Engineer</h3>
-        <p class="org">Fintech scale-up</p>
-        <p class="what">Built billing and webhook delivery for a product
-        that grew 10x while I was there. Learned idempotency the expensive
-        way, and survived my first real on-call rotation.</p>
+        <h3>DevSecOps &amp; Fullstack Engineer</h3>
+        <p class="org">Nusensia · Startup</p>
+        <p class="what">Wearing a few hats across the stack, from building
+        features to thinking about how they're delivered and secured. Startup
+        work means staying curious, adapting quickly, and getting comfortable
+        with a little bit of everything.</p>
       </li>
       <li>
-        <p class="when">2019 to 2021</p>
-        <h3>Software Engineer</h3>
-        <p class="org">Early-stage startup</p>
-        <p class="what">Third engineering hire. Shipped the first version of
-        everything: API, schema, CI, and a deploy script held together with
-        hope. Later replaced all of it, on purpose this time.</p>
+        <h3>Infrastructure Engineer &amp; SRE</h3>
+        <p class="org">Kodinus · Self-employed</p>
+        <p class="what">Exploring infrastructure and reliability hands-on:
+        keeping systems running, learning what makes them tick, and automating
+        the repetitive bits along the way.</p>
       </li>
       <li>
-        <p class="when">2017 to 2019</p>
-        <h3>Junior Developer</h3>
-        <p class="org">Digital agency</p>
-        <p class="what">Client sites and APIs on tight deadlines. My first
-        encounter with production, and with the pager.</p>
+        <h3>iOS Engineer</h3>
+        <p class="org">DR Digital Indonesia · Solo engineer</p>
+        <p class="what">Taking on iOS development as a solo engineer, with
+        room to work through problems independently and see the work through
+        from idea to implementation.</p>
       </li>
       <li>
-        <p class="when">2015</p>
-        <h3>First paid code</h3>
-        <p class="org">Internship</p>
-        <p class="what">Turned an internship into a job offer and a lot of
-        bugs into slightly fewer bugs.</p>
+        <h3>IT Support</h3>
+        <p class="org">Jati Unggul Abadi</p>
+        <p class="what">Helping keep everyday technology working and figuring
+        things out when it didn't. A hands-on start in troubleshooting,
+        supporting people, and working independently.</p>
       </li>
     </ul>
   </section>
 
   <!-- ================= WORKS ================= -->
   <section class="view" id="view-works" hidden>
-    <!--
-      Swap each placeholder SVG for a real screenshot:
-        <figure class="media"><img src="img/trace-budget.png" alt="Trace Budget dashboard"></figure>
-    -->
-    <div class="cards stagger">
-
-      <article class="card wide">
-        <figure class="media">
-          <svg viewBox="0 0 640 400" role="img" aria-label="Trace Budget dashboard preview" preserveAspectRatio="xMidYMid slice">
-            <rect width="640" height="400" fill="#111216"/>
-            <rect width="640" height="34" fill="#191A1F"/>
-            <circle cx="20" cy="17" r="5" fill="#2A2C33"/><circle cx="38" cy="17" r="5" fill="#2A2C33"/><circle cx="56" cy="17" r="5" fill="#2A2C33"/>
-            <rect x="90" y="12" width="180" height="10" rx="5" fill="#2A2C33"/>
-            <g stroke="#22242A"><line x1="60" y1="120" x2="600" y2="120"/><line x1="60" y1="180" x2="600" y2="180"/><line x1="60" y1="240" x2="600" y2="240"/><line x1="60" y1="300" x2="600" y2="300"/></g>
-            <polyline fill="none" stroke="#E8E6E1" stroke-width="2" points="60,290 120,250 180,268 240,210 300,232 360,180 420,204 480,150 540,176 600,120"/>
-            <g fill="#191A1F" stroke="#2A2C33"><rect x="60" y="330" width="160" height="46" rx="8"/><rect x="240" y="330" width="160" height="46" rx="8"/><rect x="420" y="330" width="160" height="46" rx="8"/></g>
-            <g fill="#4A4C55"><rect x="74" y="344" width="80" height="8" rx="4"/><rect x="254" y="344" width="80" height="8" rx="4"/><rect x="434" y="344" width="80" height="8" rx="4"/></g>
-          </svg>
-        </figure>
-        <div class="body">
-          <h3>Trace Budget</h3>
-          <p class="meta">Go, ClickHouse, OpenTelemetry. 2024, in production.</p>
-          <p class="desc">Trace sampling that keeps every error and slow
-          request, and lets routine traffic share what's left of a fixed
-          budget. Cut observability spend by 60% without losing signal.</p>
-          <div class="links"><a href="#">Case study</a><a href="#">GitHub</a></div>
+    <div class="stagger">
+      <section class="works-section">
+        <h2 class="works-heading">Infrastructure &amp; Reliability</h2>
+        <div class="project-grid">
+          <article class="project">
+            <div class="project-icon" aria-hidden="true"><svg viewBox="0 0 32 32"><circle cx="16" cy="16" r="12"/><path d="M5 20h5l3-9 4 12 3-7h7"/></svg></div>
+            <div><h3>Trace Budget</h3><p>Trace sampling that keeps errors and slow requests while working within a fixed budget.</p><div class="project-links"><a href="#">Case study</a><a href="#">GitHub</a></div></div>
+          </article>
         </div>
-      </article>
-
-      <article class="card">
-        <figure class="media">
-          <svg viewBox="0 0 640 400" role="img" aria-label="Migrator CLI preview" preserveAspectRatio="xMidYMid slice">
-            <rect width="640" height="400" fill="#111216"/>
-            <rect x="70" y="56" width="500" height="288" rx="12" fill="#191A1F" stroke="#2A2C33"/>
-            <circle cx="94" cy="78" r="5" fill="#2A2C33"/><circle cx="112" cy="78" r="5" fill="#2A2C33"/><circle cx="130" cy="78" r="5" fill="#2A2C33"/>
-            <g font-family="ui-monospace, monospace" font-size="14">
-              <text x="94" y="126" fill="#8F8E8A">$ migrator apply 0042_add_index</text>
-              <text x="94" y="154" fill="#E8E6E1">checking migration...</text>
-              <text x="94" y="182" fill="#FFFFFF">! destructive: DROP COLUMN legacy_id</text>
-              <text x="94" y="210" fill="#E8E6E1">type table name to confirm:</text>
-              <text x="94" y="238" fill="#8F8E8A">&gt; events_</text>
-              <text x="94" y="266" fill="#E8E6E1">applied 0042 in 312ms</text>
-            </g>
-          </svg>
-        </figure>
-        <div class="body">
-          <h3>Migrator</h3>
-          <p class="meta">Python. 2022, open source.</p>
-          <p class="desc">A schema migration CLI that refuses destructive
-          changes until a human types the table's name back. No 3 a.m.
-          pages since launch.</p>
-          <div class="links"><a href="#">GitHub</a><a href="#">Docs</a></div>
+      </section>
+      <section class="works-section">
+        <h2 class="works-heading">Developer Tools</h2>
+        <div class="project-grid">
+          <article class="project">
+            <div class="project-icon" aria-hidden="true"><svg viewBox="0 0 32 32"><rect x="3" y="5" width="26" height="22" rx="3"/><path d="m8 12 4 4-4 4M15 21h9"/></svg></div>
+            <div><h3>Migrator</h3><p>A schema migration CLI that asks for confirmation before destructive changes.</p><div class="project-links"><a href="#">GitHub</a><a href="#">Docs</a></div></div>
+          </article>
         </div>
-      </article>
-
-      <article class="card">
-        <figure class="media">
-          <svg viewBox="0 0 640 400" role="img" aria-label="Hookline architecture preview" preserveAspectRatio="xMidYMid slice">
-            <rect width="640" height="400" fill="#111216"/>
-            <g stroke="#2A2C33" stroke-width="1.5" fill="none">
-              <path d="M180,200 C260,200 260,120 340,120"/><path d="M180,200 L340,200"/><path d="M180,200 C260,200 260,280 340,280"/>
-              <path d="M430,120 C490,120 490,180 540,190"/><path d="M430,280 C490,280 490,215 540,205"/>
-            </g>
-            <g fill="#191A1F" stroke="#2A2C33">
-              <rect rx="8" x="110" y="175" width="70" height="50"/><rect rx="8" x="340" y="95" width="90" height="50"/>
-              <rect rx="8" x="340" y="175" width="90" height="50"/><rect rx="8" x="340" y="255" width="90" height="50"/>
-              <rect rx="8" x="540" y="165" width="60" height="70"/>
-            </g>
-            <g font-family="ui-monospace, monospace" font-size="12" fill="#8F8E8A">
-              <text x="122" y="204">source</text><text x="352" y="124" fill="#FFFFFF">queue</text>
-              <text x="352" y="204">retry</text><text x="352" y="284">DLQ</text><text x="548" y="205">fanout</text>
-            </g>
-          </svg>
-        </figure>
-        <div class="body">
-          <h3>Hookline</h3>
-          <p class="meta">TypeScript, Redis, Postgres. 2021, shipped.</p>
-          <p class="desc">Webhook fan-out with at-least-once delivery,
-          exponential backoff, and a replay console for the dead-letter
-          queue. The retry logic is the product.</p>
-          <div class="links"><a href="#">Live site</a><a href="#">GitHub</a></div>
+      </section>
+      <section class="works-section">
+        <h2 class="works-heading">Integrations</h2>
+        <div class="project-grid">
+          <article class="project">
+            <div class="project-icon" aria-hidden="true"><svg viewBox="0 0 32 32"><circle cx="7" cy="16" r="3"/><circle cx="25" cy="7" r="3"/><circle cx="25" cy="16" r="3"/><circle cx="25" cy="25" r="3"/><path d="M10 16h12M10 15c6 0 5-8 12-8M10 17c6 0 5 8 12 8"/></svg></div>
+            <div><h3>Hookline</h3><p>Webhook fan-out with retries, at-least-once delivery, and a replay console.</p><div class="project-links"><a href="#">Live site</a><a href="#">GitHub</a></div></div>
+          </article>
         </div>
-      </article>
-
+      </section>
     </div>
   </section>
 
